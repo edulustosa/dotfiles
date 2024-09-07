@@ -10,8 +10,14 @@ fi
 # Source/Load zinit
 source "${ZINIT_HOME}/zinit.zsh"
 
-# Starship
-eval "$(starship init zsh)"
+# Load starship theme
+# line 1: `starship` binary as command, from github release
+# line 2: starship setup at clone(create init.zsh, completion)
+# line 3: pull behavior same as clone, source init.zsh
+zinit ice as"command" from"gh-r" \
+    atclone"./starship init zsh > init.zsh; ./starship completions zsh > _starship" \
+    atpull"%atclone" src"init.zsh"
+zinit light starship/starship
 
 # Add zsh plugins
 # zinit light zsh-users/zsh-syntax-highlighting
@@ -57,7 +63,11 @@ source /usr/share/doc/fzf/examples/key-bindings.zsh
 bindkey "^[[1;5C" forward-word  # Ctrl + Right Arrow
 bindkey "^[[1;5D" backward-word # Ctrl + Left Arrow
 
-export PATH=$PATH:/usr/local/go/bin
-export PATH=$PATH:$(go env GOPATH)/bin
-
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Go
+export PATH=$PATH:$(go env GOPATH)/bin
